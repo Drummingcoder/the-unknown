@@ -8,7 +8,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 HACKATIME_API_KEY = os.getenv('HACKATIME_API_KEY')
-HACKATIME_API_URL = 'https://hackatime.hackclub.com/api'
+HACKATIME_API_URL = 'https://hackatime.hackclub.com/api/hackatime/v1'
 PROJECT_NAME = os.getenv('REPL_SLUG', 'replit-project')
 
 class CodeActivityHandler(FileSystemEventHandler):
