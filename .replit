@@ -4,4 +4,4 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
-packages = ["unzip", "unzipNLS", "unzrip", "nano", "gccgo13"]
+packages = ["gccgo13", "nano", "unzip", "unzipNLS", "unzrip"]
