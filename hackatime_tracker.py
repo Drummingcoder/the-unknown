@@ -19,7 +19,7 @@ class CodeActivityHandler(FileSystemEventHandler):
         now = time.time()
         
         if file_path in self.last_heartbeat:
-            if now - self.last_heartbeat[file_path] < 120:
+            if now - self.last_heartbeat[file_path] < 30:
                 return
         
         self.last_heartbeat[file_path] = now
@@ -76,7 +76,7 @@ def main():
     print(f"📁 Watching directory: {project_dir}")
     print(f"📊 Project: {PROJECT_NAME}")
     print(f"🔗 API endpoint: {HACKATIME_API_URL}")
-    print(f"⏱️  Heartbeat interval: 2 minutes\n")
+    print(f"⏱️  Heartbeat interval: 30 seconds\n")
     
     event_handler = CodeActivityHandler()
     observer = Observer()

@@ -90,7 +90,7 @@ The Hackatime tracker is configured to run automatically via a Replit workflow. 
 1. The `hackatime-tracker` workflow runs `hackatime_tracker.py` in the background
 2. The script watches for file modifications using Python's watchdog library
 3. When you edit supported file types (.py, .js, .ts, .html, .css, etc.), a heartbeat is sent to Hackatime
-4. Heartbeats are rate-limited to one per file every 2 minutes to avoid spam
+4. Heartbeats are rate-limited to one per file every 30 seconds to avoid spam
 5. All activity appears in your Hackatime dashboard at https://hackatime.hackclub.com
 
 ### Tracked File Types
