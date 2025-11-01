@@ -5,7 +5,7 @@ import SampleWorkflow from "../workflows/onboarding.ts";
 const joiner: Trigger<typeof SampleWorkflow.definition> = {
   type: TriggerTypes.Shortcut,
   name: "Join my secret channel!",
-  description: "Ooh, something secret? You have the guts to go in?",
+  description: "Ooh, something secret? It's Shadowlight's channel after all!",
   workflow: `#/workflows/${SampleWorkflow.definition.callback_id}`,
   inputs: {
     interactivity: {
