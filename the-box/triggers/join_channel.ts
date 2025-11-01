@@ -1,8 +1,8 @@
 import type { Trigger } from "deno-slack-sdk/types.ts";
 import { TriggerContextData, TriggerTypes } from "deno-slack-api/mod.ts";
-import SampleWorkflow from "../workflows/sample_workflow.ts";
+import SampleWorkflow from "../workflows/onboarding.ts";
 
-const sampleTrigger: Trigger<typeof SampleWorkflow.definition> = {
+const joiner: Trigger<typeof SampleWorkflow.definition> = {
   type: TriggerTypes.Shortcut,
   name: "Join my secret channel!",
   description: "Ooh, something secret? You have the guts to go in?",
@@ -11,13 +11,10 @@ const sampleTrigger: Trigger<typeof SampleWorkflow.definition> = {
     interactivity: {
       value: TriggerContextData.Shortcut.interactivity,
     },
-    channel: {
-      value: TriggerContextData.Shortcut.channel_id,
-    },
     user: {
       value: TriggerContextData.Shortcut.user_id,
     },
   },
 };
 
-export default sampleTrigger;
+export default joiner;
