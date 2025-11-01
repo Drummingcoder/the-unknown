@@ -2,9 +2,9 @@ import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
 import { spooky } from "../functions/forming.ts";
 
 const joining = DefineWorkflow({
-  callback_id: "sample_workflow",
-  title: "Sample workflow",
-  description: "A sample workflow",
+  callback_id: "joining_chan",
+  title: "Join the channel",
+  description: "This is a very legit program",
   input_parameters: {
     properties: {
       interactivity: {

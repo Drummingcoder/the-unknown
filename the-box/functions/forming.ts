@@ -9,8 +9,8 @@ export const spooky = DefineFunction({
   input_parameters: {
     properties: {
       interactivity: {
-        type: Schema.types.string,
-        description: "Message to be posted",
+        type: Schema.slack.types.interactivity,
+        description: "Does this work?",
       },
       user: {
         type: Schema.slack.types.user_id,
@@ -25,14 +25,38 @@ export default SlackFunction(
   spooky,
   async ({ inputs, client }) => {
     const openfirst = await client.views.open({
-      interactivity_pointer: inputs.interactivity,
-      views: [
-        {
-          
+      interactivity_pointer: inputs.interactivity.interactivity_pointer,
+      view: {
+        callback_id: "first",
+        type: "modal",
+        title: {
+          type: "plain_text",
+          text: "Come in!"
         },
-      ],
+        submit: {
+          type: "plain_text",
+          text: "Submit",
+        },
+        blocks: [
+          {
+            type: "image",
+            image_url: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/883739cb057a05e23226a064b9f58e73ffdba73c_scary.gif",
+            alt_text: "Get scared, buddy!",
+            title: { type: "plain_text", text: "Booooo!"},
+          },
+          {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: "Did that get you? If not, let's continue...",
+            }
+          }
+        ]
+      },
     });
 
-    return { outputs: { } };
+    console.log(openfirst);
+
+    return { completed: false, outputs: undefined };
   },
 );

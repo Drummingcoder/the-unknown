@@ -5,7 +5,7 @@ import SampleObjectDatastore from "./datastores/sample_datastore.ts";
 export default Manifest({
   name: "The Box",
   description: "Just some fun tools to manage a channel!",
-  icon: "assets/default_new_app_icon.png",
+  icon: "assets/box.jpg",
   workflows: [SampleWorkflow],
   outgoingDomains: [],
   datastores: [SampleObjectDatastore],
