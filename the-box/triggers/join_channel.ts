@@ -4,8 +4,8 @@ import SampleWorkflow from "../workflows/sample_workflow.ts";
 
 const sampleTrigger: Trigger<typeof SampleWorkflow.definition> = {
   type: TriggerTypes.Shortcut,
-  name: "Join my secret ",
-  description: "A sample trigger",
+  name: "Join my secret channel!",
+  description: "Ooh, something secret? You have the guts to go in?",
   workflow: `#/workflows/${SampleWorkflow.definition.callback_id}`,
   inputs: {
     interactivity: {
