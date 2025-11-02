@@ -24,6 +24,15 @@ export const spooky = DefineFunction({
 export default SlackFunction(
   spooky,
   async ({ inputs, client }) => {
+    await client.apps.datastore.put<
+      typeof people.definition
+    >({
+      datastore: people.name,
+      item: {
+        user_id: inputs.user,
+        clicked: true,
+      },
+    });
     const openfirst = await client.views.open({
       interactivity_pointer: inputs.interactivity.interactivity_pointer,
       view: {
@@ -86,14 +95,25 @@ export default SlackFunction(
     return { completed: false, outputs: undefined };
   },
 ).addBlockActionsHandler("answer1", async ({ body, client }) => {
-  await client.apps.datastore.get<
+  const getResp1 = await client.apps.datastore.get<
     typeof people.definition
   >({
     datastore: people.name,
-    
+    id: body.user.id,
   });
-
-
+  
+  if (! getResp1.item.question1) {
+    await client.apps.datastore.put<
+      typeof people.definition
+    >({
+      datastore: people.name,
+      item: {
+        user_id: body.user.id,
+        question1: false,
+      },
+    });
+  }
+  
   await client.views.update({
     view_id: body.view.id,
     blocks: [
@@ -134,27 +154,52 @@ export default SlackFunction(
     ]
   });
   return { completed: false, outputs: undefined };
+}).addBlockActionsHandler("answer2", async ({ body, client}) => {
+  await client.apps.datastore.update<
+    typeof people.definition
+  >({
+    datastore: people.name,
+    item: {
+      user_id: body.user.id,
+      question1: true,
+    },
+  });
+  return { completed: false, outputs: undefined };
 }).addBlockActionsHandler("answer3", async ({ body, client }) => {
+  const getResp1 = await client.apps.datastore.get<
+    typeof people.definition
+  >({
+    datastore: people.name,
+    id: body.user.id,
+  });
+  if (! getResp1.item.question2) {
+    await client.apps.datastore.put<
+      typeof people.definition
+    >({
+      datastore: people.name,
+      item: {
+        user_id: body.user.id,
+        question2: false,
+      },
+    });
+  }
+
   await client.views.update({
     view_id: body.view.id,
     blocks: [
       {
         "type": "section",
-        "elements": [
-          {
-            "type": "mrkdwn",
-            "text": "That is correct!\n"
-          }
-        ]
+        "text": {
+          "type": "mrkdwn",
+          "text": "That is correct!\n"
+        }
       },
       {
         "type": "section",
-        "elements": [
-          {
-            "type": "mrkdwn",
-            "text": "Last quiz question: who am I?"
-          }
-        ]
+        "text": {
+          "type": "mrkdwn",
+          "text": "Last quiz question: who am I?"
+        }
       },
       {
         type: "actions",
@@ -179,6 +224,115 @@ export default SlackFunction(
     ]
   });
   return { completed: false, outputs: undefined};
+}).addBlockActionsHandler("answer4", async ({ body, client}) => {
+  await client.apps.datastore.update<
+    typeof people.definition
+  >({
+    datastore: people.name,
+    item: {
+      user_id: body.user.id,
+      question2: true,
+    },
+  });
+  return { completed: false, outputs: undefined };
+}).addBlockActionsHandler("answer5", async ({ body, client}) => {
+  await client.apps.datastore.update<
+    typeof people.definition
+  >({
+    datastore: people.name,
+    item: {
+      user_id: body.user.id,
+      question3: true,
+    },
+  });
+  return { completed: false, outputs: undefined };
 }).addBlockActionsHandler("answer6", async ({ body, client}) => {
-
+  const getResp1 = await client.apps.datastore.get<
+    typeof people.definition
+  >({
+    datastore: people.name,
+    id: body.user.id,
+  });
+  if (! getResp1.item.question3) {
+    await client.apps.datastore.put<
+      typeof people.definition
+    >({
+      datastore: people.name,
+      item: {
+        user_id: body.user.id,
+        question3: false,
+      },
+    });
+  }
+  await client.views.update({
+    view_id: body.view.id,
+    submit: {
+      type: "plain_text",
+      text: "Submit!"
+    },
+    blocks: [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "That is correct! Now that the quiz is over, are you ready for the survey?\n"
+        }
+      },
+      {
+        type: "input",
+        block_id: "aboutyou",
+        label: {
+          "type": "plain_text",
+          "text": "What are some cool things you have done, and some things you want me to know about you?",
+          "emoji": true
+        },
+        element: {
+          "type": "plain_text_input",
+          "action_id": "abuin"
+        }
+      },
+      {
+        type: "input",
+        block_id: "joinre",
+        label: {
+          "type": "plain_text",
+          "text": "Why do you want to join this channel?",
+          "emoji": true
+        },
+        element: {
+          "type": "plain_text_input",
+          "action_id": "joinin"
+        }
+      },
+      {
+        type: "input",
+        block_id: "obsessions",
+        label: {
+          "type": "plain_text",
+          "text": "What are your obsessions and some things you like? Video games, movies, anime, sports, music, I'm talking about anything. Let me know what YOU love!",
+          "emoji": true
+        },
+        element: {
+          "type": "plain_text_input",
+          "multiline": true,
+          "action_id": "joinin",
+        }
+      },
+      {
+        type: "text",
+        text: {
+          type: "plain_text",
+          text: "Lastly, who am I? I'm a Slack bot maker, Arduino user, website developer, anime enthusiast, and Genshin Impact player! I know some things about other games (Hollow Knight, Honkai Star Rail, Fortnite, Roblox (not a lot tho)) and I can talk about a lot of stuff! One of my weaknesses are current trends and sport games, idk much about what's going on in the NBA or stuff like that right now."
+        }
+      },
+      {
+        type: "text",
+        text: {
+          type: "plain_text",
+          text: "Will you get in? I let almost anyone into my channel, so don't worry! You have a pretty high chance of getting in!"
+        }
+      },
+    ]
+  });
+  return { completed: false, outputs: undefined};
 });

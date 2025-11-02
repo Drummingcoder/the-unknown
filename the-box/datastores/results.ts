@@ -16,6 +16,9 @@ const people = DefineDatastore({
     question3: {
       type: Schema.types.boolean,
     },
+    clicked: {
+      type: Schema.types.boolean,
+    }
   },
 });
 
