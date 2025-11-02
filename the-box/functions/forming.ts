@@ -326,6 +326,20 @@ export default SlackFunction(
         }
       },
       {
+        type: "input",
+        block_id: "impression",
+        label: {
+          "type": "plain_text",
+          "text": "Just kidding, one last question. What is your honest impression of me, from what you have seen about me so far?",
+          "emoji": true
+        },
+        element: {
+          "type": "plain_text_input",
+          "multiline": true,
+          "action_id": "impre",
+        }
+      },
+      {
         type: "text",
         text: {
           type: "plain_text",
@@ -341,6 +355,7 @@ export default SlackFunction(
   const aboutYou = state["aboutyou"]?.abuin?.value ?? "";
   const why = state["joinre"]?.joinin?.value ?? "";
   const obsess = state["obsessions"]?.obse?.value ?? "";
+  const immm = state["impression"]?.impre?.value ?? "";
 
   const convo = await client.conversations.open({
     users: "U091EPSQ3E3",
@@ -353,7 +368,7 @@ export default SlackFunction(
     id: body.user.id,
   });
 
-  const thread = await client.chat.postMessage({
+  await client.chat.postMessage({
     channel: convo.channel.id,
     blocks: [
       {
@@ -388,6 +403,13 @@ export default SlackFunction(
         type: "section",
         text: {
           type: "mrkdwn",
+          text: `To your fourth question about impressions, they said "${immm}".\n\n`,
+        }
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
           text: `As to your quiz, the first question they got ${getResp.item.question1 ? "wrong" : "right"}, the second question they got ${getResp.item.question2 ? "wrong" : "right"}, and the third question they got ${getResp.item.question3 ? "wrong" : "right"}.`,
         }
       },
@@ -395,11 +417,69 @@ export default SlackFunction(
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `Ok, so, will you let them in?`,
+          text: `Ok, so, will you let them in to your private channel?`,
         }
       },
-
+      {
+        "type": "actions",
+        "elements": [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Yes!"
+            },
+            "action_id": "yesin",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "No!"
+            },
+            "action_id": "noout",
+            "style": "danger"
+          }
+        ]
+      }
     ]
-  })
+  });
 
+  const adder = await client.conversations.invite({
+    channel: "C09AHN6V1U7",
+    user: body.user.id,
+  });
+  console.log(adder);
+
+  await client.chat.postEphemeral({
+    channel: "C09AHN6V1U7",
+    user: body.user.id,
+    text: "Surprise! Gotta be here first if you want to join my private channel right? But, is there even one in the first place?",
+  });
+
+  const convo2 = await client.conversations.open({
+    users: body.user.id,
+  });
+
+  await client.chat.postMessage({
+    channel: convo2.channel.id,
+    blocks: [
+      {
+        type: "image",
+        image_url: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/506b6ca5e817beacea49bd686307acb396e667a1_jumping.gif",
+        alt_text: "Get scared again!",
+        title: { type: "context", text: "Why not again?"},
+      },
+    ]
+  });
+  
+  await client.chat.postMessage({
+    channel: convo2.channel.id,
+    text: `On a real note, thanks for filling out my form! I just share tidbits about my life from time to time, so feel free to chat away or ask questions in the channel! You can even DM me if you like (I can chat about lots of stuff), but if you're shy, DM me through <@${"U09L63WBP9B"}>, my anonymous DM bot! Just mention me first in the bot's DMs, and then a message will pop up!`
+  });
+}).addBlockActionsHandler("yesin", async ({ body, client }) => {
+  
+}).addBlockActionsHandler("noout", async ({ body, client }) => {
+  
 });
