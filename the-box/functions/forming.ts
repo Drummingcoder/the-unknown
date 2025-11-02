@@ -207,7 +207,7 @@ export default SlackFunction(
           {
             type: "button",
             action_id: "answer5",
-            text: { type: "plain_text", text: "An artist who loves to play Hollow Knight"},
+            text: { type: "plain_text", text: "An artist"},
             style: "primary",
             value: "submission31",
             url: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/99b46b68ad8efc6b4c142a15d360df6be8233252_spring.gif",
@@ -215,7 +215,7 @@ export default SlackFunction(
           {
             type: "button",
             action_id: "answer6",
-            text: { type: "plain_text", text: "A programmer who loves to play Genshin Impact"},
+            text: { type: "plain_text", text: "A programmer"},
             style: "primary",
             value: "submission32"
           }
@@ -264,7 +264,7 @@ export default SlackFunction(
       },
     });
   }
-  await client.views.update({
+  const what = await client.views.update({
     view_id: body.view.id,
     submit: {
       type: "plain_text",
@@ -319,7 +319,7 @@ export default SlackFunction(
         }
       },
       {
-        type: "text",
+        type: "section",
         text: {
           type: "plain_text",
           text: "Lastly, who am I? I'm a Slack bot maker, Arduino user, website developer, anime enthusiast, and Genshin Impact player! I can chat about a lot of things!"
@@ -340,7 +340,7 @@ export default SlackFunction(
         }
       },
       {
-        type: "text",
+        type: "section",
         text: {
           type: "plain_text",
           text: "Will you get in? I let almost anyone into my channel, so don't worry! You have a pretty high chance of getting in!"
@@ -348,6 +348,7 @@ export default SlackFunction(
       },
     ]
   });
+  console.log(what);
   return { completed: false, outputs: undefined};
 }).addViewSubmissionHandler("first", async ({ body, client }) => {
   const state = body.view.state?.values;
@@ -375,7 +376,7 @@ export default SlackFunction(
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `Hey there! ${body.user.id} wants to join your private channel! Here's what they said: \n`,
+          text: `Hey there! <@${body.user.id}> wants to join your private channel! Here's what they said: \n`,
         }
       },
       {
@@ -448,9 +449,9 @@ export default SlackFunction(
 
   const adder = await client.conversations.invite({
     channel: "C09AHN6V1U7",
-    user: body.user.id,
+    users: body.user.id,
   });
-  console.log(adder);
+  console.log("second:", adder);
 
   await client.chat.postEphemeral({
     channel: "C09AHN6V1U7",
@@ -462,24 +463,94 @@ export default SlackFunction(
     users: body.user.id,
   });
 
-  await client.chat.postMessage({
+  const error = await client.chat.postMessage({
     channel: convo2.channel.id,
     blocks: [
       {
         type: "image",
         image_url: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/506b6ca5e817beacea49bd686307acb396e667a1_jumping.gif",
         alt_text: "Get scared again!",
-        title: { type: "context", text: "Why not again?"},
+        title: { type: "plain_text", text: "Nice lady, right?"},
       },
     ]
   });
+  console.log("text error:", error);
   
   await client.chat.postMessage({
     channel: convo2.channel.id,
-    text: `On a real note, thanks for filling out my form! I just share tidbits about my life from time to time, so feel free to chat away or ask questions in the channel! You can even DM me if you like (I can chat about lots of stuff), but if you're shy, DM me through <@${"U09L63WBP9B"}>, my anonymous DM bot! Just mention me first in the bot's DMs, and then a message will pop up!`
+    text: `On a real note, thanks for wanting to join! I just share tidbits about my life from time to time, so feel free to chat away or ask questions in the channel! You can even DM me if you like (I can chat about lots of stuff), but if you're shy, DM me through <@${"U09L63WBP9B"}>, my anonymous DM bot! Just mention me first in the bot's DMs, and then a message will pop up, where you can chat with me! I always make sure to check and answer any DM or messages in my personal that you send :3`
   });
+
 }).addBlockActionsHandler("yesin", async ({ body, client }) => {
-  
+  if (body.message && body.channel) {
+    const blocks = body.message.blocks.map(block => {
+      if (block.type === "actions" && Array.isArray(block.elements)) {
+        const elements = block.elements.filter(
+          (el: any) => el.action_id !== "yesin" && el.action_id !== "noout"
+        );
+        if (elements.length === 0) return null;
+        return { ...block, elements };
+      }
+      return block;
+    }).filter(Boolean);
+    await client.chat.update({
+      channel: body.channel.id,
+      ts: body.message.ts,
+      blocks: [
+        ...blocks,
+        {
+          "type": "context",
+          "elements": [
+            {
+              "type": "mrkdwn",
+              "text": `Got it! They have joined the channel!`
+            }
+          ]
+        },
+      ]
+    });
+  }
+
+  const adder = await client.conversations.invite({
+    channel: "C09Q73F6T46",
+    user: body.user.id,
+  });
+  console.log(adder);
+  const convo2 = await client.conversations.open({
+    users: body.user.id,
+  });
+  await client.chat.postMessage({
+    channel: convo2.channel.id,
+    text: `Guess what? There was a private channel, and you got in! I won't use this much, but probably just share some things that are personal or concern other people in Hack Club. Please don't leak any messages from here :cryin:.`
+  });
+
 }).addBlockActionsHandler("noout", async ({ body, client }) => {
-  
+  if (body.message && body.channel) {
+    const blocks = body.message.blocks.map(block => {
+      if (block.type === "actions" && Array.isArray(block.elements)) {
+        const elements = block.elements.filter(
+          (el: any) => el.action_id !== "yesin" && el.action_id !== "noout"
+        );
+        if (elements.length === 0) return null;
+        return { ...block, elements };
+      }
+      return block;
+    }).filter(Boolean);
+    await client.chat.update({
+      channel: body.channel.id,
+      ts: body.message.ts,
+      blocks: [
+        ...blocks,
+        {
+          "type": "context",
+          "elements": [
+            {
+              "type": "mrkdwn",
+              "text": `Got it! They won't be let in.`
+            }
+          ]
+        },
+      ]
+    });
+  }
 });
