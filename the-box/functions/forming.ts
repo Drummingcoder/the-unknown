@@ -296,7 +296,7 @@ export default SlackFunction(
         block_id: "joinre",
         label: {
           "type": "plain_text",
-          "text": "Why do you want to join this channel?",
+          "text": "Why do you want to join this channel, and how did you find it in the first place?",
           "emoji": true
         },
         element: {
@@ -315,14 +315,14 @@ export default SlackFunction(
         element: {
           "type": "plain_text_input",
           "multiline": true,
-          "action_id": "joinin",
+          "action_id": "obse",
         }
       },
       {
         type: "text",
         text: {
           type: "plain_text",
-          text: "Lastly, who am I? I'm a Slack bot maker, Arduino user, website developer, anime enthusiast, and Genshin Impact player! I know some things about other games (Hollow Knight, Honkai Star Rail, Fortnite, Roblox (not a lot tho)) and I can talk about a lot of stuff! One of my weaknesses are current trends and sport games, idk much about what's going on in the NBA or stuff like that right now."
+          text: "Lastly, who am I? I'm a Slack bot maker, Arduino user, website developer, anime enthusiast, and Genshin Impact player! I can chat about a lot of things!"
         }
       },
       {
@@ -335,4 +335,71 @@ export default SlackFunction(
     ]
   });
   return { completed: false, outputs: undefined};
+}).addViewSubmissionHandler("first", async ({ body, client }) => {
+  const state = body.view.state?.values;
+  
+  const aboutYou = state["aboutyou"]?.abuin?.value ?? "";
+  const why = state["joinre"]?.joinin?.value ?? "";
+  const obsess = state["obsessions"]?.obse?.value ?? "";
+
+  const convo = await client.conversations.open({
+    users: "U091EPSQ3E3",
+  });
+
+  const getResp = await client.apps.datastore.get<
+    typeof people.definition
+  >({
+    datastore: people.name,
+    id: body.user.id,
+  });
+
+  const thread = await client.chat.postMessage({
+    channel: convo.channel.id,
+    blocks: [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `Hey there! ${body.user.id} wants to join your private channel! Here's what they said: \n`,
+        }
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `To your first question about themselves, they said "${aboutYou}".\n\n`,
+        }
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `To your second question about joining, they said "${why}".\n\n`,
+        }
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `To your third question about obsessions, they said "${obsess}".\n\n`,
+        }
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `As to your quiz, the first question they got ${getResp.item.question1 ? "wrong" : "right"}, the second question they got ${getResp.item.question2 ? "wrong" : "right"}, and the third question they got ${getResp.item.question3 ? "wrong" : "right"}.`,
+        }
+      },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `Ok, so, will you let them in?`,
+        }
+      },
+
+    ]
+  })
+
 });

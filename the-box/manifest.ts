@@ -9,5 +9,5 @@ export default Manifest({
   workflows: [joining],
   outgoingDomains: [],
   datastores: [people],
-  botScopes: ["commands","chat:write","chat:write.public","datastore:read","datastore:write",],
+  botScopes: ["channels:manage", "groups:write", "im:write", "mpim:write", "commands","chat:write","chat:write.public","datastore:read","datastore:write",],
 });
