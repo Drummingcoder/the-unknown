@@ -128,27 +128,49 @@ export default SlackFunction(
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": "Next question, who is Christina Asquith?"
+          "text": "Next question, who is this?"
         }
+      },
+      {
+        type: "image",
+        image_url: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/1a80c3b9e0a31db5cc52fbc23e11c56962989d68_image.png",
+        alt_text: "mystery",
+        title: { type: "plain_text", text: "Who?"},
       },
       {
         type: "actions",
         elements: [
           {
             type: "button",
-            action_id: "answer3",
-            text: { type: "plain_text", text: "A co-founder of Hack Club"},
-            style: "primary",
-            value: "submission21"
-          }, 
-          {
-            type: "button",
             action_id: "answer4",
-            text: { type: "plain_text", text: "The Creative Lead of Hack Club"},
+            text: { type: "plain_text", text: "Arataki Itto"},
             style: "primary",
             value: "submission22",
             url: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/1108082f2092cf348f4cd0a514606e25a0d95329_trap.gif",
-          }
+          },
+          {
+            type: "button",
+            action_id: "answer4",
+            text: { type: "plain_text", text: "Freddy Krueger"},
+            style: "primary",
+            value: "submission22",
+            url: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/1108082f2092cf348f4cd0a514606e25a0d95329_trap.gif",
+          },
+          {
+            type: "button",
+            action_id: "answer4",
+            text: { type: "plain_text", text: "Kaedehara Kazuha"},
+            style: "primary",
+            value: "submission22",
+            url: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/1108082f2092cf348f4cd0a514606e25a0d95329_trap.gif",
+          },
+          {
+            type: "button",
+            action_id: "answer3",
+            text: { type: "plain_text", text: "Kamisato Ayato"},
+            style: "primary",
+            value: "submission21"
+          },
         ]
       }
     ]
@@ -513,7 +535,12 @@ export default SlackFunction(
 
   const adder = await client.conversations.invite({
     channel: "C09Q73F6T46",
+    users: body.user.id,
+  });
+  await client.chat.postEphemeral({
+    channel: "C09Q73F6T46",
     user: body.user.id,
+    text: "Welcome to the channel!",
   });
   console.log(adder);
   const convo2 = await client.conversations.open({
