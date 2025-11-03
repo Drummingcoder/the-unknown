@@ -103,7 +103,7 @@ export default SlackFunction(
   });
   
   if (! getResp1.item.question1) {
-    await client.apps.datastore.put<
+    await client.apps.datastore.update<
       typeof people.definition
     >({
       datastore: people.name,
@@ -114,7 +114,7 @@ export default SlackFunction(
     });
   }
   
-  await client.views.update({
+  const rep = await client.views.update({
     view_id: body.view.id,
     blocks: [
       {
@@ -150,16 +150,58 @@ export default SlackFunction(
           },
           {
             type: "button",
-            action_id: "answer4",
-            text: { type: "plain_text", text: "Freddy Krueger"},
+            action_id: "answer3",
+            text: { type: "plain_text", text: "Kamisato Ayato"},
             style: "primary",
-            value: "submission22",
-            url: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/1108082f2092cf348f4cd0a514606e25a0d95329_trap.gif",
+            value: "submission21"
           },
+        ]
+      }
+    ]
+  });
+  console.log(rep);
+  return { completed: false, outputs: undefined };
+}).addBlockActionsHandler("answer2", async ({ body, client}) => {
+  await client.apps.datastore.update<
+    typeof people.definition
+  >({
+    datastore: people.name,
+    item: {
+      user_id: body.user.id,
+      question1: true,
+    },
+  });
+
+  const rep = await client.views.update({
+    view_id: body.view.id,
+    blocks: [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Incorrect...\n"
+        }
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Next question, who is this?"
+        }
+      },
+      {
+        type: "image",
+        image_url: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/1a80c3b9e0a31db5cc52fbc23e11c56962989d68_image.png",
+        alt_text: "mystery",
+        title: { type: "plain_text", text: "Who?"},
+      },
+      {
+        type: "actions",
+        elements: [
           {
             type: "button",
             action_id: "answer4",
-            text: { type: "plain_text", text: "Kaedehara Kazuha"},
+            text: { type: "plain_text", text: "Arataki Itto"},
             style: "primary",
             value: "submission22",
             url: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/1108082f2092cf348f4cd0a514606e25a0d95329_trap.gif",
@@ -175,17 +217,8 @@ export default SlackFunction(
       }
     ]
   });
-  return { completed: false, outputs: undefined };
-}).addBlockActionsHandler("answer2", async ({ body, client}) => {
-  await client.apps.datastore.update<
-    typeof people.definition
-  >({
-    datastore: people.name,
-    item: {
-      user_id: body.user.id,
-      question1: true,
-    },
-  });
+  console.log(rep);
+
   return { completed: false, outputs: undefined };
 }).addBlockActionsHandler("answer3", async ({ body, client }) => {
   const getResp1 = await client.apps.datastore.get<
@@ -195,7 +228,7 @@ export default SlackFunction(
     id: body.user.id,
   });
   if (! getResp1.item.question2) {
-    await client.apps.datastore.put<
+    await client.apps.datastore.update<
       typeof people.definition
     >({
       datastore: people.name,
@@ -256,6 +289,47 @@ export default SlackFunction(
       question2: true,
     },
   });
+  
+  await client.views.update({
+    view_id: body.view.id,
+    blocks: [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Incorrect...\n"
+        }
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Last quiz question: who am I?"
+        }
+      },
+      {
+        type: "actions",
+        elements: [
+          {
+            type: "button",
+            action_id: "answer5",
+            text: { type: "plain_text", text: "An artist"},
+            style: "primary",
+            value: "submission31",
+            url: "https://hc-cdn.hel1.your-objectstorage.com/s/v3/99b46b68ad8efc6b4c142a15d360df6be8233252_spring.gif",
+          }, 
+          {
+            type: "button",
+            action_id: "answer6",
+            text: { type: "plain_text", text: "A programmer"},
+            style: "primary",
+            value: "submission32"
+          }
+        ]
+      }
+    ]
+  });
+
   return { completed: false, outputs: undefined };
 }).addBlockActionsHandler("answer5", async ({ body, client}) => {
   await client.apps.datastore.update<
@@ -267,7 +341,92 @@ export default SlackFunction(
       question3: true,
     },
   });
-  return { completed: false, outputs: undefined };
+  const what = await client.views.update({
+    view_id: body.view.id,
+    submit: {
+      type: "plain_text",
+      text: "Submit!"
+    },
+    blocks: [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "That is incorrect! Anyways, the quiz is over, are you ready for the survey?\n"
+        }
+      },
+      {
+        type: "input",
+        block_id: "aboutyou",
+        label: {
+          "type": "plain_text",
+          "text": "What are some cool things you have done, and some things you want me to know about you?",
+          "emoji": true
+        },
+        element: {
+          "type": "plain_text_input",
+          "action_id": "abuin"
+        }
+      },
+      {
+        type: "input",
+        block_id: "joinre",
+        label: {
+          "type": "plain_text",
+          "text": "Why do you want to join this channel, and how did you find it in the first place?",
+          "emoji": true
+        },
+        element: {
+          "type": "plain_text_input",
+          "action_id": "joinin"
+        }
+      },
+      {
+        type: "input",
+        block_id: "obsessions",
+        label: {
+          "type": "plain_text",
+          "text": "What are your obsessions and some things you like? Video games, movies, anime, sports, music, I'm talking about anything. Let me know what YOU love!",
+          "emoji": true
+        },
+        element: {
+          "type": "plain_text_input",
+          "multiline": true,
+          "action_id": "obse",
+        }
+      },
+      {
+        type: "section",
+        text: {
+          type: "plain_text",
+          text: "Lastly, who am I? I'm a Slack bot maker, Arduino user, website developer, anime enthusiast, and Genshin Impact player! I can chat about a lot of things!"
+        }
+      },
+      {
+        type: "input",
+        block_id: "impression",
+        label: {
+          "type": "plain_text",
+          "text": "Just kidding, one last question. What is your honest impression of me, from what you have seen about me so far?",
+          "emoji": true
+        },
+        element: {
+          "type": "plain_text_input",
+          "multiline": true,
+          "action_id": "impre",
+        }
+      },
+      {
+        type: "section",
+        text: {
+          type: "plain_text",
+          text: "Will you get in? I let almost anyone into my channel, so don't worry! You have a pretty high chance of getting in!"
+        }
+      },
+    ]
+  });
+  console.log(what);
+  return { completed: false, outputs: undefined};
 }).addBlockActionsHandler("answer6", async ({ body, client}) => {
   const getResp1 = await client.apps.datastore.get<
     typeof people.definition
@@ -276,7 +435,7 @@ export default SlackFunction(
     id: body.user.id,
   });
   if (! getResp1.item.question3) {
-    await client.apps.datastore.put<
+    await client.apps.datastore.update<
       typeof people.definition
     >({
       datastore: people.name,
@@ -453,6 +612,7 @@ export default SlackFunction(
               "text": "Yes!"
             },
             "action_id": "yesin",
+            "value": body.user.id,
             "style": "primary"
           },
           {
@@ -535,16 +695,16 @@ export default SlackFunction(
 
   const adder = await client.conversations.invite({
     channel: "C09Q73F6T46",
-    users: body.user.id,
+    users: body.actions?.[0]?.value,
   });
   await client.chat.postEphemeral({
     channel: "C09Q73F6T46",
-    user: body.user.id,
+    user: body.actions?.[0]?.value,
     text: "Welcome to the channel!",
   });
   console.log(adder);
   const convo2 = await client.conversations.open({
-    users: body.user.id,
+    users: body.actions?.[0]?.value,
   });
   await client.chat.postMessage({
     channel: convo2.channel.id,
