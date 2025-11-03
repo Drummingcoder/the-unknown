@@ -26,4 +26,4 @@ The Sans Tracker bot's code is stored inside the sans folder.
 
 It's as easy as that!
 
-Video demo of answering the form: 
+Video demo of answering the form: https://github.com/user-attachments/assets/ee42ef7f-528a-4556-9bf8-805ba5b2fb1e
