@@ -1,5 +1,11 @@
 {
   "apps": {
+    "E09V59WQY1E": {
+      "app_id": "A0A0ZHCF1Q8",
+      "enterprise_id": "E09V59WQY1E",
+      "team_domain": "hackclub",
+      "team_id": "E09V59WQY1E"
+    },
     "T0266FRGM": {
       "app_id": "A09PYQWS5CK",
       "team_domain": "hackclub",
